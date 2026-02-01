@@ -19,7 +19,9 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Docker Image Build
-        run: docker build -f docker/user/local.Dockerfile -t mysqldb:${{github.sha}} .
+        run: |
+          cd docker/user
+          docker build -f local.Dockerfile -t mysqldb:${{github.sha}} .
 
       - name: Docker Image Tag
         run: docker tag mysqldb:${{github.sha}} eunjinchoi11/mysqldb:local
