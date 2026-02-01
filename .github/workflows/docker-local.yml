@@ -1,0 +1,28 @@
+name: Docker Build/Push
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Docker Image Build
+        run: docker build -f ./docker/local.Dockerfile -t mysqldb:${{github.sha}}
+
+      - name: Docker Image Tag
+        run: docker tag mysqldb:${{github.sha}} eunjinchoi11/mysqldb:local
+
+      - name: Docker Image Push
+        run: docker push eunjinchoi11/mysqldb:local
